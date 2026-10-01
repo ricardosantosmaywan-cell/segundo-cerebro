@@ -61,6 +61,12 @@ src/lib/hooks/         hooks de leitura para os ecrãs (usam `repo`)
 - Rotas em português: `/` (Hoje), `/inbox`, `/criativos`, `/campanhas`, `/tarefas`.
 - Mobile-first: alvos de toque com pelo menos 44px, navegação inferior fixa, sem animações
   pesadas.
+- Desktop a partir de `lg` (1024px); abaixo disso o layout é o de telemóvel. Um só componente
+  de navegação (`app-nav.tsx`): barra inferior em mobile, barra lateral `w-56` em `lg+` (manter
+  em sincronia com `lg:pl-56` em `layout.tsx`). Preferir classes `lg:` no mesmo componente em
+  vez de duplicar componentes. Foco visível (`focus-visible:ring-2`) em tudo o que é clicável.
+- Atalhos: Cmd/Ctrl+K foca a captura rápida; a tecla `c` faz o mesmo quando nenhum campo tem
+  foco (`quick-capture.tsx`). Qualquer ecrã com captura rápida herda o atalho.
 - Simples antes de bonito. Não adicionar bibliotecas sem necessidade clara.
 - Tema claro/escuro: classe `dark` no `<html>`, definida por um script inline antes do primeiro
   paint, guardada em `localStorage` (`theme`).
