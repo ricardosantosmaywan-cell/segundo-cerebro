@@ -97,5 +97,16 @@ npm run lint
 npm run build
 ```
 
-Nota: o projeto pode estar num disco exFAT. O macOS cria ficheiros `._*`, que estão ignorados
-no git.
+### Disco exFAT
+
+O projeto pode estar num disco exFAT, onde o macOS cria ficheiros `._*` ao lado de cada ficheiro.
+Estão ignorados no git, no ESLint e no TypeScript. Os scripts `predev`/`prebuild` apagam-nos de
+`.next/`, porque partem o cache do Turbopack. Para limpar à mão:
+`find . -name '._*' -not -path './node_modules/*' -delete`.
+
+### Telemóvel na rede local
+
+Pelo IP local (`http://192.168.x.x:3000`) o browser não está em contexto seguro: o service
+worker não regista (a app funciona, mas não é instalável) e `crypto.randomUUID` não existe
+(por isso usa-se `newId()` de `src/lib/ids.ts`). Para testar a instalação como PWA, usar
+`localhost` ou o deploy em https.
