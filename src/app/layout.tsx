@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { AppHeader } from "@/components/app-header";
-import { BottomNav } from "@/components/bottom-nav";
+import { AppNav } from "@/components/app-nav";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import "./globals.css";
 
@@ -32,10 +32,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-dvh">
         <AppHeader />
-        <main className="mx-auto w-full max-w-xl px-4 pt-2 pb-[calc(6rem+env(safe-area-inset-bottom))]">
-          {children}
-        </main>
-        <BottomNav />
+        {/* lg:pl-56 leaves room for the sidebar (w-56 in app-nav.tsx). */}
+        <div className="lg:pl-56">
+          <main className="mx-auto w-full max-w-xl px-4 pt-2 pb-[calc(6rem+env(safe-area-inset-bottom))] lg:max-w-6xl lg:px-8 lg:pt-8 lg:pb-12">
+            {children}
+          </main>
+        </div>
+        <AppNav />
         <ServiceWorkerRegister />
       </body>
     </html>
