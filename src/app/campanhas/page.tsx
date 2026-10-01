@@ -35,7 +35,7 @@ export default function CampanhasPage() {
         (q.data.campaigns.length === 0 ? (
           <Empty>Sem campanhas.</Empty>
         ) : (
-          <ul className="space-y-3">
+          <ul className="space-y-3 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4 lg:space-y-0">
             {q.data.campaigns.map((c) => (
               <li key={c.id}>
                 <CampaignCard

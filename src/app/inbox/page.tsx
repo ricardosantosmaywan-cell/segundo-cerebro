@@ -36,7 +36,7 @@ export default function InboxPage() {
           (q.data.length === 0 ? (
             <Empty>Inbox vazia. Tudo triado.</Empty>
           ) : (
-            <ul className="space-y-3">
+            <ul className="space-y-3 lg:grid lg:grid-cols-2 lg:items-start lg:gap-4 lg:space-y-0">
               {q.data.map((item) => (
                 <li key={item.id}>
                   <InboxCard item={item} onDone={setLastAction} />

@@ -56,18 +56,25 @@ export default function TarefasPage() {
         (q.data.groups.every((g) => g.items.length === 0) ? (
           <Empty>Sem tarefas.</Empty>
         ) : (
-          q.data.groups.map(
-            (g) =>
-              g.items.length > 0 && (
-                <Section key={g.title} title={g.title} aside={<span className="text-xs text-muted-foreground">{g.items.length}</span>}>
-                  <div className="divide-y">
-                    {g.items.map((t) => (
-                      <TaskItem key={t.id} task={t} context={q.data.context(t)} />
-                    ))}
-                  </div>
-                </Section>
-              ),
-          )
+          <div className="lg:columns-2 lg:gap-x-10">
+            {q.data.groups.map(
+              (g) =>
+                g.items.length > 0 && (
+                  <Section
+                    key={g.title}
+                    title={g.title}
+                    className="break-inside-avoid lg:first:mt-0"
+                    aside={<span className="text-xs text-muted-foreground">{g.items.length}</span>}
+                  >
+                    <div className="divide-y">
+                      {g.items.map((t) => (
+                        <TaskItem key={t.id} task={t} context={q.data.context(t)} />
+                      ))}
+                    </div>
+                  </Section>
+                ),
+            )}
+          </div>
         ))}
     </>
   );

@@ -15,7 +15,7 @@ export function TaskItem({ task, context }: { task: Task; context?: string }) {
   }
 
   return (
-    <label className="flex min-h-12 cursor-pointer items-start gap-3 rounded-lg px-1 py-2.5 active:bg-muted">
+    <label className="flex min-h-12 cursor-pointer items-start gap-3 rounded-lg px-1 py-2.5 focus-within:bg-muted active:bg-muted lg:hover:bg-muted">
       <Checkbox
         checked={done}
         onCheckedChange={toggle}
