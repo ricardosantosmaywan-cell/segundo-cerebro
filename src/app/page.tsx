@@ -1,14 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { AlertTriangle, ChevronRight } from "lucide-react";
+import { AlertTriangle, ChevronRight, Plus } from "lucide-react";
 import { repo, type Campaign, type Creative, type CreativeStatus } from "@/lib/data";
 import { addDays, relativeDay, toDateOnly, today } from "@/lib/dates";
 import { useRepoQuery } from "@/lib/hooks/use-repo-query";
 import { creativeStatusLabel, formatMoney } from "@/lib/labels";
 import { QuickCapture } from "@/components/quick-capture";
 import { Empty, LoadError, Loading, Section } from "@/components/section";
+import { TaskForm } from "@/components/task-form";
 import { TaskItem } from "@/components/task-item";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 const ALERT_WINDOW_DAYS = 3;
@@ -134,13 +137,22 @@ function AlertsSection({ data }: { data: TodayData }) {
 
 function TasksSection({ data }: { data: TodayData }) {
   const openCount = data.tasks.filter((t) => t.status !== "feito").length;
+  const [creating, setCreating] = useState(false);
 
   return (
     <Section
       title="Tarefas de hoje"
       className="order-3 lg:order-none"
-      aside={<span className="text-xs text-muted-foreground">{openCount} por fazer</span>}
+      aside={
+        <span className="flex items-center gap-3">
+          <span className="text-xs text-muted-foreground">{openCount} por fazer</span>
+          <Button variant="outline" className="h-11 px-3" onClick={() => setCreating(true)}>
+            <Plus /> Nova tarefa
+          </Button>
+        </span>
+      }
     >
+      {creating && <TaskForm defaults={{ due_date: data.day }} onClose={() => setCreating(false)} />}
       {data.tasks.length === 0 ? (
         <Empty>Nada para hoje nem em atraso.</Empty>
       ) : (

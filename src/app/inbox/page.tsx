@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { CheckSquare, Image as ImageIcon, Trash2 } from "lucide-react";
+import { CalendarCheck, CheckSquare, Image as ImageIcon, Trash2 } from "lucide-react";
 import { repo, type InboxItem } from "@/lib/data";
-import { relativeDay, toDateOnly } from "@/lib/dates";
+import { relativeDay, toDateOnly, today } from "@/lib/dates";
 import { useRepoQuery } from "@/lib/hooks/use-repo-query";
 import { sourceLabel } from "@/lib/labels";
 import { QuickCapture } from "@/components/quick-capture";
@@ -73,7 +73,7 @@ function InboxCard({ item, onDone }: { item: InboxItem; onDone: (msg: string) =>
           {item.source && ` · ${sourceLabel(item.source)}`}
         </p>
       </div>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-2 gap-2 lg:grid-cols-4">
         <Button
           variant="secondary"
           className="h-11"
@@ -81,6 +81,19 @@ function InboxCard({ item, onDone }: { item: InboxItem; onDone: (msg: string) =>
           onClick={() => run(() => repo.processInboxItem(item.id, { kind: "task" }), "Transformado em tarefa ✓")}
         >
           <CheckSquare /> Tarefa
+        </Button>
+        <Button
+          variant="secondary"
+          className="h-11"
+          disabled={busy}
+          onClick={() =>
+            run(
+              () => repo.processInboxItem(item.id, { kind: "task", task: { due_date: today() } }),
+              "Tarefa criada para hoje ✓",
+            )
+          }
+        >
+          <CalendarCheck /> Fazer hoje
         </Button>
         <Button
           variant="secondary"
