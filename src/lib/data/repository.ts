@@ -34,6 +34,9 @@ export interface CreativeFilter {
 
 export interface TaskFilter {
   status?: TaskStatus | TaskStatus[];
+  channel_id?: UUID;
+  campaign_id?: UUID;
+  creative_id?: UUID;
   /** Inclusive upper bound on due_date ("YYYY-MM-DD"). Tasks without due_date are excluded. */
   due_on_or_before?: string;
 }
@@ -60,17 +63,24 @@ export interface Repository {
 
   // Campaigns
   listCampaigns(filter?: CampaignFilter): Promise<Campaign[]>;
+  getCampaign(id: UUID): Promise<Campaign | undefined>;
   createCampaign(input: NewCampaign): Promise<Campaign>;
   updateCampaign(id: UUID, patch: CampaignPatch): Promise<Campaign>;
+  /** Linked creatives and tasks keep existing with campaign_id = null (SQL: on delete set null). */
+  deleteCampaign(id: UUID): Promise<void>;
 
   // Creatives
   listCreatives(filter?: CreativeFilter): Promise<Creative[]>;
+  getCreative(id: UUID): Promise<Creative | undefined>;
   createCreative(input: NewCreative): Promise<Creative>;
   updateCreative(id: UUID, patch: CreativePatch): Promise<Creative>;
   updateCreativeStatus(id: UUID, status: CreativeStatus): Promise<Creative>;
+  /** Tasks linked to it keep existing with creative_id = null (SQL: on delete set null). */
+  deleteCreative(id: UUID): Promise<void>;
 
   // Tasks
   listTasks(filter?: TaskFilter): Promise<Task[]>;
+  getTask(id: UUID): Promise<Task | undefined>;
   createTask(input: NewTask): Promise<Task>;
   /** Setting status to/from 'feito' updates completed_at (same as the SQL trigger). */
   updateTask(id: UUID, patch: TaskPatch): Promise<Task>;

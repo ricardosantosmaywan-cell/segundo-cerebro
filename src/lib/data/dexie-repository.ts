@@ -147,7 +147,7 @@ export const dexieRepository: Repository = {
     const db = getDb();
     await db.transaction("rw", db.inbox_items, db.tasks, async () => {
       // on delete set null
-      await db.tasks.where("inbox_item_id").equals(id).modify({ inbox_item_id: null });
+      await db.tasks.where("inbox_item_id").equals(id).modify({ inbox_item_id: null, updated_at: nowIso() });
       await db.inbox_items.delete(id);
     });
     notify();
@@ -160,6 +160,11 @@ export const dexieRepository: Repository = {
       .campaigns.filter((c) => mine(c) && (!statuses || statuses.includes(c.status)))
       .toArray();
     return rows.sort(byCreatedDesc);
+  },
+
+  async getCampaign(id) {
+    const row = await getDb().campaigns.get(id);
+    return row && mine(row) ? row : undefined;
   },
 
   async createCampaign(input) {
@@ -194,6 +199,18 @@ export const dexieRepository: Repository = {
     return next;
   },
 
+  async deleteCampaign(id) {
+    const db = getDb();
+    const ts = nowIso();
+    await db.transaction("rw", db.campaigns, db.creatives, db.tasks, async () => {
+      // on delete set null
+      await db.creatives.where("campaign_id").equals(id).modify({ campaign_id: null, updated_at: ts });
+      await db.tasks.where("campaign_id").equals(id).modify({ campaign_id: null, updated_at: ts });
+      await db.campaigns.delete(id);
+    });
+    notify();
+  },
+
   // ---------- Creatives ----------
   async listCreatives(filter: CreativeFilter = {}) {
     const statuses = asArray(filter.status);
@@ -206,6 +223,11 @@ export const dexieRepository: Repository = {
       )
       .toArray();
     return rows.sort(byDueAsc);
+  },
+
+  async getCreative(id) {
+    const row = await getDb().creatives.get(id);
+    return row && mine(row) ? row : undefined;
   },
 
   async createCreative(input) {
@@ -243,6 +265,16 @@ export const dexieRepository: Repository = {
     return dexieRepository.updateCreative(id, { status });
   },
 
+  async deleteCreative(id) {
+    const db = getDb();
+    await db.transaction("rw", db.creatives, db.tasks, async () => {
+      // on delete set null
+      await db.tasks.where("creative_id").equals(id).modify({ creative_id: null, updated_at: nowIso() });
+      await db.creatives.delete(id);
+    });
+    notify();
+  },
+
   // ---------- Tasks ----------
   async listTasks(filter: TaskFilter = {}) {
     const statuses = asArray(filter.status);
@@ -252,10 +284,18 @@ export const dexieRepository: Repository = {
         (t) =>
           mine(t) &&
           (!statuses || statuses.includes(t.status)) &&
+          (!filter.channel_id || t.channel_id === filter.channel_id) &&
+          (!filter.campaign_id || t.campaign_id === filter.campaign_id) &&
+          (!filter.creative_id || t.creative_id === filter.creative_id) &&
           (!limit || (t.due_date !== null && t.due_date <= limit)),
       )
       .toArray();
     return rows.sort(byDueAsc);
+  },
+
+  async getTask(id) {
+    const row = await getDb().tasks.get(id);
+    return row && mine(row) ? row : undefined;
   },
 
   async createTask(input) {
