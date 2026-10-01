@@ -28,10 +28,13 @@ export function diffDays(from: DateOnly, to: DateOnly): number {
   return Math.round((parse(to).getTime() - parse(from).getTime()) / 86_400_000);
 }
 
-const shortFmt = new Intl.DateTimeFormat("pt-PT", { day: "numeric", month: "short" });
+// Fixed list: Intl output for pt-PT short dates varies between browsers ("11/10" vs "11 out").
+const MONTHS = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 
+/** "11 out" */
 export function formatShort(date: DateOnly): string {
-  return shortFmt.format(parse(date)).replace(".", "");
+  const d = parse(date);
+  return `${d.getDate()} ${MONTHS[d.getMonth()]}`;
 }
 
 /** "hoje", "amanhã", "ontem", "em 3 dias", "há 2 dias" or a short date. */

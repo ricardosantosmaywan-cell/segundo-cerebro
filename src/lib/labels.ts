@@ -28,6 +28,12 @@ export const taskPriorityLabel: Record<TaskPriority, string> = {
   alta: "Alta",
 };
 
+const sourceLabels: Record<string, string> = { telemovel: "telemóvel", web: "web" };
+
+export function sourceLabel(source: string): string {
+  return sourceLabels[source] ?? source;
+}
+
 const eur = new Intl.NumberFormat("pt-PT", { style: "currency", currency: "EUR" });
 
 export function formatMoney(value: number): string {

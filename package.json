@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "dev:lan": "next dev -H 0.0.0.0",
+    "predev": "find .next -name '._*' -delete 2>/dev/null; true",
+    "predev:lan": "find .next -name '._*' -delete 2>/dev/null; true",
+    "prebuild": "find .next -name '._*' -delete 2>/dev/null; true"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",

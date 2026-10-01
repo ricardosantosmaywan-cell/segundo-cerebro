@@ -51,3 +51,4 @@ next-env.d.ts
 
 # local editor/agent settings
 .claude/settings.local.json
+.claude/launch.json
