@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { AppHeader } from "@/components/app-header";
 import { AppNav } from "@/components/app-nav";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
+import { UndoToastHost } from "@/components/undo-toast";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </main>
         </div>
         <AppNav />
+        <UndoToastHost />
         <ServiceWorkerRegister />
       </body>
     </html>

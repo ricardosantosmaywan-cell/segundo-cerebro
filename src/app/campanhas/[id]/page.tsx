@@ -12,6 +12,7 @@ import { CampaignForm } from "@/components/campaign-form";
 import { CreativeCard } from "@/components/creative-card";
 import { CreativeForm } from "@/components/creative-form";
 import { Empty, LoadError, Loading, Section } from "@/components/section";
+import { TaskForm } from "@/components/task-form";
 import { TaskItem } from "@/components/task-item";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,7 @@ export default function CampanhaPage() {
   const [editingCampaign, setEditingCampaign] = useState(false);
   // undefined = closed, null = new creative for this campaign, Creative = editing it
   const [editingCreative, setEditingCreative] = useState<Creative | null | undefined>(undefined);
+  const [creatingTask, setCreatingTask] = useState(false);
 
   const back = (
     <Link
@@ -108,6 +110,8 @@ export default function CampanhaPage() {
         />
       )}
 
+      {creatingTask && <TaskForm defaults={{ campaign_id: c.id }} onClose={() => setCreatingTask(false)} />}
+
       <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-10">
         <Section
           title="Criativos"
@@ -130,7 +134,14 @@ export default function CampanhaPage() {
           )}
         </Section>
 
-        <Section title="Tarefas" aside={<span className="text-xs text-muted-foreground">{tasks.length}</span>}>
+        <Section
+          title="Tarefas"
+          aside={
+            <Button variant="outline" className="h-11 px-3" onClick={() => setCreatingTask(true)}>
+              <Plus /> Nova tarefa
+            </Button>
+          }
+        >
           {tasks.length === 0 ? (
             <Empty>Sem tarefas ligadas a esta campanha.</Empty>
           ) : (

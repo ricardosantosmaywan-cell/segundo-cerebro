@@ -58,7 +58,8 @@ src/lib/hooks/         hooks de leitura para os ecrãs (usam `repo`)
 - Interface em **português de Portugal**. Código, nomes de ficheiros e commits em inglês.
   Valores de estado ficam como no SQL (`a_fazer`, `em_producao`, …). Os rótulos legíveis
   vêm de `src/lib/labels.ts`.
-- Rotas em português: `/` (Hoje), `/inbox`, `/criativos`, `/campanhas`, `/tarefas`.
+- Rotas em português: `/` (Hoje), `/inbox`, `/criativos`, `/campanhas`, `/campanhas/[id]`
+  (página da campanha: criativos e tarefas ligados), `/tarefas`.
 - Mobile-first: alvos de toque com pelo menos 44px, navegação inferior fixa, sem animações
   pesadas.
 - Desktop a partir de `lg` (1024px); abaixo disso o layout é o de telemóvel. Um só componente
@@ -72,6 +73,24 @@ src/lib/hooks/         hooks de leitura para os ecrãs (usam `repo`)
   paint, guardada em `localStorage` (`theme`).
 - Páginas que leem dados são Client Components (`"use client"`), porque os dados vivem no
   browser.
+
+## CRUD e formulários
+
+- O repositório tem CRUD completo de criativos, campanhas e tarefas (`get*`, `create*`, `update*`,
+  `delete*`, `list*` com filtros). Apagar uma campanha ou um criativo desliga os registos ligados
+  (`campaign_id` / `creative_id` a `null`, numa transação), como o `on delete set null` do SQL.
+- Os triggers do SQL são replicados no repositório: `updated_at` em cada edição e `completed_at`
+  preenchido ao passar a `feito` e limpo ao sair de `feito`.
+- Formulários: `Modal` (`<dialog>` nativo: sheet em baixo abaixo de `lg`, diálogo centrado em
+  `lg+`, Esc fecha, foca o primeiro campo) → `FormDialog` (Cancelar / Guardar / Apagar com
+  confirmação) → campos em `form-fields.tsx`. Sem biblioteca de formulários; a validação é feita
+  no `submit` de cada formulário, com mensagens em português.
+- Padrão: `creative-form.tsx`, `campaign-form.tsx` e `task-form.tsx` montam-se **só enquanto
+  estão abertos** (`{editing && <XForm .../>}`), por isso o estado reinicia sempre. Sem `creative` /
+  `campaign` / `task` criam; com ele editam. `defaults` pré-preenche (ex.: campanha ligada).
+- `TaskItem` tem o seu próprio lápis e formulário, por isso funciona igual no Hoje, nas Tarefas e na
+  página da campanha. Concluir mostra "Concluída · Desfazer" (`undo-toast.tsx`, montado no layout,
+  acima da navegação inferior em mobile).
 
 ## Segurança e privacidade (repositório público)
 
